@@ -13,7 +13,7 @@ SQUARE_SIZE = WIDTH // 8
 
 # Initialize the screen
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Chess Board")
+pygame.display.set_caption("Chess Notes")
 
 def main():
     clock = pygame.time.Clock()
@@ -47,7 +47,7 @@ def main():
                 if dragging_piece:
                     # If dragging, update the position of the piece
                     mouse_x, mouse_y = event.pos
-                    offset_x, offset_y = mouse_x - (original_square % 8) * SQUARE_SIZE, mouse_y - (HEIGHT - (original_square // 8)) * SQUARE_SIZE
+                    offset_x, offset_y = mouse_x - (original_square % 8) * SQUARE_SIZE, mouse_y - (HEIGHT - (original_square // 8) * SQUARE_SIZE)
 
             if event.type == MOUSEBUTTONUP:
                 if dragging_piece:
@@ -64,7 +64,7 @@ def main():
                     original_square = None
 
         draw_board(screen, WIDTH, HEIGHT, SQUARE_SIZE)  # Draw the board
-        draw_pieces(screen, board, SQUARE_SIZE, dragging_piece, offset_x, offset_y)  # Draw the pieces with drag offset
+        draw_pieces(screen, board, SQUARE_SIZE, dragging_piece, original_square, offset_x, offset_y)  # Draw the pieces with drag offset
         pygame.display.flip()
 
         clock.tick(60)

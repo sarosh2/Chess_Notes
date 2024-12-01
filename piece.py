@@ -15,7 +15,7 @@ def load_images(SQUARE_SIZE):
         except pygame.error:
             print(f"Failed to load image for {piece}")
 
-def draw_pieces(screen, board, SQUARE_SIZE, dragging_piece=None, offset_x=0, offset_y=0):
+def draw_pieces(screen, board, SQUARE_SIZE, dragging_piece=None, dragging_square=None, offset_x=0, offset_y=0):
     """Draw all the pieces on the board, with support for dragging."""
     for square in chess.SQUARES:
         piece = board.piece_at(square)
@@ -29,9 +29,9 @@ def draw_pieces(screen, board, SQUARE_SIZE, dragging_piece=None, offset_x=0, off
 
             if piece_image:
                 # Check if this piece is the one being dragged
-                if piece == dragging_piece:
+                if piece == dragging_piece and dragging_square == square:
                     # Draw the piece with offset when dragging
-                    screen.blit(piece_image, (offset_x - SQUARE_SIZE // 2, offset_y - SQUARE_SIZE // 2))
+                    screen.blit(piece_image, (offset_x + col * SQUARE_SIZE - SQUARE_SIZE // 2, offset_y + row * SQUARE_SIZE + SQUARE_SIZE // 2))
                 else:
                     # Draw the piece normally on the board
                     screen.blit(piece_image, (col * SQUARE_SIZE, row * SQUARE_SIZE))
