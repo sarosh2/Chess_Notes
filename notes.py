@@ -9,7 +9,7 @@ pygame.font.init()
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 BACKGROUND_COLOR = (240, 240, 240)
-TAB_ACTIVE_COLOR = (200, 200, 200)
+TAB_ACTIVE_COLOR = (200, 0, 0)
 TAB_INACTIVE_COLOR = (220, 220, 220)
 
 # Font for notes
@@ -45,7 +45,7 @@ def draw_notes(screen, board):
     draw_tab(screen, WIDTH + 2 * tab_width, 50, tab_width, tab_height, "Engine Lines", selected_tab == "Engine Lines", 2)
 
     # Draw "Move History" title in the bottom half
-    draw_move_history(screen, font, half_height + 60, board)
+    draw_move_history(screen, font, tab_width * 3, half_height + 60, tab_height, board)
 
     # Draw content based on the selected tab
     y_offset = half_height + 100  # Start below the "Move History" title
