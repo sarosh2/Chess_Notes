@@ -5,7 +5,7 @@ from piece import draw_pieces, load_images
 from promotion import show_promotion_dialog
 from pygame.locals import MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEMOTION
 import notes  # Import the notes module
-from config import WIDTH, NOTES_WIDTH, HEIGHT, SQUARE_SIZE
+from config import WIDTH, NOTES_WIDTH, HEIGHT, SQUARE_SIZE, TAB_HEIGHT
 
 # Initialize Pygame
 pygame.init()
@@ -35,7 +35,8 @@ def main():
             if event.type == MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = event.pos
                 if mouse_x >= WIDTH:  # Only check if the click was in the notes section
-                    notes.handle_tab_click(mouse_x, mouse_y)
+                    if mouse_y - 50 < TAB_HEIGHT:
+                        notes.handle_tab_click(mouse_x, mouse_y)
                 else:
                     col, row = mouse_x // SQUARE_SIZE, (HEIGHT - mouse_y) // SQUARE_SIZE
 
