@@ -59,7 +59,7 @@ def main():
                     
                     # Make the move if it's legal
                     promotion_piece = None
-                    if piece.symbol() == 'P' and target_square // 8 == 7 or piece.symbol() == 'p' and target_square // 8 == 0:
+                    if piece.symbol() == 'P' and board.turn == chess.WHITE and target_square // 8 == 7 or piece.symbol() == 'p' and board.turn == chess.BLACK and target_square // 8 == 0:
                         promotion_piece = show_promotion_dialog(screen, SQUARE_SIZE, piece.color, col, row)
                     
                     if board.is_legal(chess.Move(original_square, target_square, promotion_piece)):
