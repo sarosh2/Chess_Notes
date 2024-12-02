@@ -1,7 +1,7 @@
 import pygame
 import chess
 
-def show_promotion_dialog(screen, square_size, color):
+def show_promotion_dialog(screen, square_size, color, column, row):
     """
     Display a promotion dialog box allowing the user to choose a piece.
 
@@ -12,34 +12,59 @@ def show_promotion_dialog(screen, square_size, color):
     Returns:
     - The chosen piece type (e.g., chess.QUEEN, chess.ROOK, etc.).
     """
-    # Load piece images
-    piece_images = {
-        chess.QUEEN: pygame.image.load(f"assets/{'w' if color == chess.WHITE else 'b'}q.png"),
-        chess.ROOK: pygame.image.load(f"assets/{'w' if color == chess.WHITE else 'b'}r.png"),
-        chess.BISHOP: pygame.image.load(f"assets/{'w' if color == chess.WHITE else 'b'}b.png"),
-        chess.KNIGHT: pygame.image.load(f"assets/{'w' if color == chess.WHITE else 'b'}n.png"),
-    }
+    if color == chess.WHITE:
 
-    # Resize images to fit the square size
-    piece_images = {piece: pygame.transform.scale(img, (square_size, square_size)) for piece, img in piece_images.items()}
+        # Load piece images
+        piece_images = {
+            chess.QUEEN: pygame.image.load(f"assets/wq.png"),
+            chess.ROOK: pygame.image.load(f"assets/wr.png"),
+            chess.BISHOP: pygame.image.load(f"assets/wb.png"),
+            chess.KNIGHT: pygame.image.load(f"assets/wn.png"),
+        }
 
-    options = [
-        (chess.QUEEN, piece_images[chess.QUEEN]),
-        (chess.ROOK, piece_images[chess.ROOK]),
-        (chess.BISHOP, piece_images[chess.BISHOP]),
-        (chess.KNIGHT, piece_images[chess.KNIGHT]),
-    ]
+        # Resize images to fit the square size
+        piece_images = {piece: pygame.transform.scale(img, (square_size, square_size)) for piece, img in piece_images.items()}
 
-    dialog_width = square_size * len(options)
-    dialog_height = square_size
-    dialog_x = (screen.get_width() - dialog_width) // 2
-    dialog_y = (screen.get_height() - dialog_height) // 2
+
+        options = [
+            (chess.QUEEN, piece_images[chess.QUEEN]),
+            (chess.KNIGHT, piece_images[chess.KNIGHT]),
+            (chess.ROOK, piece_images[chess.ROOK]),
+            (chess.BISHOP, piece_images[chess.BISHOP]),
+        ]
+
+    else:
+
+        # Load piece images
+        piece_images = {
+            chess.QUEEN: pygame.image.load(f"assets/bq.png"),
+            chess.ROOK: pygame.image.load(f"assets/br.png"),
+            chess.BISHOP: pygame.image.load(f"assets/bb.png"),
+            chess.KNIGHT: pygame.image.load(f"assets/bn.png"),
+        }
+
+        # Resize images to fit the square size
+        piece_images = {piece: pygame.transform.scale(img, (square_size, square_size)) for piece, img in piece_images.items()}
+
+        options = [
+            (chess.BISHOP, piece_images[chess.BISHOP]),
+            (chess.ROOK, piece_images[chess.ROOK]),
+            (chess.KNIGHT, piece_images[chess.KNIGHT]),
+            (chess.QUEEN, piece_images[chess.QUEEN]),
+        ]
+
+    dialog_width = square_size
+    dialog_height = square_size * len(options)
+    dialog_x = column * square_size
+    dialog_y = (7 - row) * square_size
+    if color == chess.BLACK:
+        dialog_y-= dialog_height - square_size
     dialog_rect = pygame.Rect(dialog_x, dialog_y, dialog_width, dialog_height)
 
-    button_width = dialog_width // len(options)
+    button_height = dialog_height // len(options)
     buttons = []
     for i, (piece, img) in enumerate(options):
-        button_rect = pygame.Rect(dialog_x + i * button_width, dialog_y, button_width, dialog_height)
+        button_rect = pygame.Rect(dialog_x, dialog_y + i * button_height, dialog_width, button_height)
         buttons.append((button_rect, piece, img))
 
     selected_piece = None
