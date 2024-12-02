@@ -10,7 +10,7 @@ def show_promotion_dialog(screen, square_size, color, column, row):
     - square_size: Size of a single square on the chessboard.
 
     Returns:
-    - The chosen piece type (e.g., chess.QUEEN, chess.ROOK, etc.).
+    - The chosen piece type (e.g., chess.QUEEN, chess.ROOK, etc.), or None if canceled.
     """
     if color == chess.WHITE:
 
@@ -24,7 +24,6 @@ def show_promotion_dialog(screen, square_size, color, column, row):
 
         # Resize images to fit the square size
         piece_images = {piece: pygame.transform.scale(img, (square_size, square_size)) for piece, img in piece_images.items()}
-
 
         options = [
             (chess.QUEEN, piece_images[chess.QUEEN]),
@@ -54,18 +53,24 @@ def show_promotion_dialog(screen, square_size, color, column, row):
         ]
 
     dialog_width = square_size
-    dialog_height = square_size * len(options)
+    dialog_height = square_size * (len(options))  # Additional space for the cancel button
     dialog_x = column * square_size
     dialog_y = (7 - row) * square_size
     if color == chess.BLACK:
-        dialog_y-= dialog_height - square_size
+        dialog_y -= dialog_height - square_size
     dialog_rect = pygame.Rect(dialog_x, dialog_y, dialog_width, dialog_height)
 
-    button_height = dialog_height // len(options)
+    button_height = dialog_height // (len(options))  # Adjust button height to include cancel button
     buttons = []
     for i, (piece, img) in enumerate(options):
         button_rect = pygame.Rect(dialog_x, dialog_y + i * button_height, dialog_width, button_height)
         buttons.append((button_rect, piece, img))
+
+    # Add cancel button
+    if color == chess.WHITE:
+        cancel_button_rect = pygame.Rect(dialog_x, dialog_y + len(options) * button_height, dialog_width, button_height // 2)
+    else:
+        cancel_button_rect = pygame.Rect(dialog_x, dialog_y - button_height // 2, dialog_width, button_height // 2)
 
     selected_piece = None
     waiting = True
@@ -82,15 +87,24 @@ def show_promotion_dialog(screen, square_size, color, column, row):
                         selected_piece = piece
                         waiting = False
                         break
+                if cancel_button_rect.collidepoint(mouse_x, mouse_y):
+                    selected_piece = None
+                    waiting = False
+                    break
 
         # Draw dialog box
         screen.fill((255, 255, 255), dialog_rect)  # White background
-        pygame.draw.rect(screen, (0, 0, 0), dialog_rect, 2)  # Black border
 
         # Draw buttons with images
         for button_rect, _, img in buttons:
             screen.blit(img, button_rect.topleft)
-            pygame.draw.rect(screen, (0, 0, 0), button_rect, 2)  # Black border for each button
+
+        # Draw cancel button
+        pygame.draw.rect(screen, (150, 150, 150), cancel_button_rect)  # Red background for cancel button
+        font = pygame.font.Font(None, square_size // 2)
+        text = font.render("X", True, (100, 100, 100))
+        text_rect = text.get_rect(center=cancel_button_rect.center)
+        screen.blit(text, text_rect)
 
         pygame.display.flip()
 
