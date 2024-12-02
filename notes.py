@@ -1,5 +1,6 @@
 import pygame
 from config import WIDTH, HEIGHT, NOTES_WIDTH
+from move_history import draw_move_history
 
 # Initialize Pygame font system explicitly
 pygame.font.init()
@@ -22,7 +23,7 @@ engine_lines = []
 # Initialize the selected tab to 'My Notes'
 selected_tab = "My Notes"
 
-def draw_notes(screen):
+def draw_notes(screen, board):
     """Draw the 'My Notes' section on the right side of the screen."""
     # Draw background for notes section
     pygame.draw.rect(screen, BACKGROUND_COLOR, (WIDTH, 0, NOTES_WIDTH, HEIGHT))  # Background
@@ -44,9 +45,7 @@ def draw_notes(screen):
     draw_tab(screen, WIDTH + 2 * tab_width, 50, tab_width, tab_height, "Engine Lines", selected_tab == "Engine Lines", 2)
 
     # Draw "Move History" title in the bottom half
-    move_history_title = font.render("Move History", True, BLACK)
-    move_history_title_width = move_history_title.get_width()
-    screen.blit(move_history_title, (WIDTH + (NOTES_WIDTH - move_history_title_width) // 2, half_height + 60))  # Center the title
+    draw_move_history(screen, font, half_height + 60, board)
 
     # Draw content based on the selected tab
     y_offset = half_height + 100  # Start below the "Move History" title

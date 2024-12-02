@@ -66,14 +66,13 @@ def main():
 
                     if board.is_legal(chess.Move(original_square, target_square, promotion_piece)):
                         board.push(chess.Move(original_square, target_square, promotion_piece))
-                        print(board.move_stack)
                     # Reset dragging
                     dragging_piece = None
                     original_square = None
 
         draw_board(screen)  # Draw the board
         draw_pieces(screen, board, dragging_piece, original_square, offset_x, offset_y)  # Draw the pieces with drag offset
-        notes.draw_notes(screen)  # Draw the notes section
+        notes.draw_notes(screen, board)  # Draw the notes section
         pygame.display.flip()
 
         clock.tick(60)
