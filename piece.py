@@ -1,10 +1,11 @@
 import pygame
 import chess
+from config import SQUARE_SIZE
 
 # Dictionary to store images for the pieces
 PIECE_IMAGES = {}
 
-def load_images(SQUARE_SIZE):
+def load_images():
     """Load all chess piece images."""
     global PIECE_IMAGES
     for piece in ['bp', 'br', 'bn', 'bb', 'bq', 'bk', 'wp', 'wr', 'wn', 'wb', 'wq', 'wk']:
@@ -15,7 +16,7 @@ def load_images(SQUARE_SIZE):
         except pygame.error:
             print(f"Failed to load image for {piece}")
 
-def draw_pieces(screen, board, SQUARE_SIZE, dragging_piece=None, dragging_square=None, offset_x=0, offset_y=0):
+def draw_pieces(screen, board, dragging_piece=None, dragging_square=None, offset_x=0, offset_y=0):
     """Draw all the pieces on the board, with support for dragging."""
     for square in chess.SQUARES:
         piece = board.piece_at(square)
