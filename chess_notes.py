@@ -58,16 +58,17 @@ def main():
                 if dragging_piece:
                     # Check if the move is legal
                     mouse_x, mouse_y = event.pos
-                    col, row = mouse_x // SQUARE_SIZE, (HEIGHT - mouse_y) // SQUARE_SIZE
-                    target_square = chess.square(col, row)
+                    if 0 < mouse_x < WIDTH and 0 < mouse_y < HEIGHT:
+                        col, row = mouse_x // SQUARE_SIZE, (HEIGHT - mouse_y) // SQUARE_SIZE
+                        target_square = chess.square(col, row)
 
-                    # Make the move if it's legal
-                    promotion_piece = None
-                    if piece.symbol() == 'P' and board.turn == chess.WHITE and target_square // 8 == 7 or piece.symbol() == 'p' and board.turn == chess.BLACK and target_square // 8 == 0:
-                        promotion_piece = show_promotion_dialog(screen, SQUARE_SIZE, piece.color, col, row)
+                        # Make the move if it's legal
+                        promotion_piece = None
+                        if piece.symbol() == 'P' and board.turn == chess.WHITE and target_square // 8 == 7 or piece.symbol() == 'p' and board.turn == chess.BLACK and target_square // 8 == 0:
+                            promotion_piece = show_promotion_dialog(screen, SQUARE_SIZE, piece.color, col, row)
 
-                    if board.is_legal(chess.Move(original_square, target_square, promotion_piece)):
-                        board.push(chess.Move(original_square, target_square, promotion_piece))
+                        if board.is_legal(chess.Move(original_square, target_square, promotion_piece)):
+                            board.push(chess.Move(original_square, target_square, promotion_piece))
                     # Reset dragging
                     dragging_piece = None
                     original_square = None

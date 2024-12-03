@@ -9,7 +9,7 @@ import engine
 pygame.font.init()
 
 # Font for notes
-font = pygame.font.Font(None, 45)
+font = pygame.font.Font(None, 35)
 
 # Initialize the selected tab to 'My Notes'
 selected_tab = "Saved Lines"
