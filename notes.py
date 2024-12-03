@@ -44,7 +44,7 @@ def draw_notes(screen, board):
     elif selected_tab == "Stats":
         stats.draw_section(screen, font, y_offset)
     elif selected_tab == "Engine Lines":
-        engine.draw_section(screen, font, y_offset)
+        engine.draw_section(screen, board, font, y_offset)
 
 
 def draw_tab(screen, x, y, width, height, text, is_active, index):

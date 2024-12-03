@@ -76,8 +76,9 @@ def main():
         notes.draw_notes(screen, board)  # Draw the notes section
         pygame.display.flip()
 
-        clock.tick(60)
+        clock.tick(100)
 
+    notes.engine.quit_engine()
     pygame.quit()
 
 if __name__ == "__main__":
