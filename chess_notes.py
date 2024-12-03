@@ -51,7 +51,8 @@ def main():
                 if dragging_piece:
                     # If dragging, update the position of the piece
                     mouse_x, mouse_y = event.pos
-                    offset_x, offset_y = mouse_x - (original_square % 8) * SQUARE_SIZE, mouse_y - (HEIGHT - (original_square // 8) * SQUARE_SIZE)
+                    if mouse_x < WIDTH - 40:
+                        offset_x, offset_y = mouse_x - (original_square % 8) * SQUARE_SIZE, mouse_y - (HEIGHT - (original_square // 8) * SQUARE_SIZE)
 
             if event.type == MOUSEBUTTONUP:
                 if dragging_piece:
@@ -76,7 +77,7 @@ def main():
         notes.draw_notes(screen, board)  # Draw the notes section
         pygame.display.flip()
 
-        clock.tick(100)
+        clock.tick(60)
 
     notes.engine.quit_engine()
     pygame.quit()

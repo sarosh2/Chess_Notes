@@ -1,17 +1,18 @@
 # move_history.py
 
 import pygame
-from config import WIDTH, NOTES_WIDTH, TAB_HEIGHT
+from config import WIDTH, NOTES_WIDTH, TAB_HEIGHT, HEIGHT, BACKGROUND_COLOR
 
-def draw_move_history(screen, font, width, height, board):
+def draw_move_history(screen, font, height, board):
     """Draw the move history section under 'Move History'."""
     # Draw "Move History" title
     
     
     move_history_title = font.render("Move History", True, (0, 0, 0))
     move_history_title_width = move_history_title.get_width()
-    pygame.draw.rect(screen, (150, 150, 150), (WIDTH, height, width, TAB_HEIGHT))
-    pygame.draw.rect(screen, (0, 0, 0), (WIDTH, height, width, TAB_HEIGHT), 2)  # Border of the tab
+    pygame.draw.rect(screen, BACKGROUND_COLOR, (WIDTH, height, NOTES_WIDTH, HEIGHT - height))  # Background
+    pygame.draw.rect(screen, (150, 150, 150), (WIDTH, height, NOTES_WIDTH, TAB_HEIGHT))
+    pygame.draw.rect(screen, (0, 0, 0), (WIDTH, height, NOTES_WIDTH, TAB_HEIGHT), 2)  # Border of the tab
     
     screen.blit(move_history_title, (WIDTH + (NOTES_WIDTH - move_history_title_width) // 2, height + (TAB_HEIGHT - move_history_title.get_height()) // 2))  # Center the title
 

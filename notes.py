@@ -14,15 +14,21 @@ font = pygame.font.Font(None, 45)
 # Initialize the selected tab to 'My Notes'
 selected_tab = "Saved Lines"
 
+# Variable to track the last time content was drawn
+last_draw_time = 0
+DRAW_INTERVAL = 1500  # 2 seconds in milliseconds
+
 def draw_notes(screen, board):
     """Draw the 'My Notes' section on the right side of the screen."""
-    # Draw background for notes section
-    pygame.draw.rect(screen, BACKGROUND_COLOR, (WIDTH, 0, NOTES_WIDTH, HEIGHT))  # Background
-    pygame.draw.rect(screen, BLACK, (WIDTH, 0, NOTES_WIDTH, HEIGHT), 2)  # Border
+    global last_draw_time
 
     # Draw the title "My Notes" at the top, centered
     title_text = font.render("My Notes", True, BLACK)
     title_width = title_text.get_width()
+
+    # Draw background for notes section
+    pygame.draw.rect(screen, BACKGROUND_COLOR, (WIDTH, 0, NOTES_WIDTH, 50))  # Background
+    pygame.draw.rect(screen, BLACK, (WIDTH, 0, NOTES_WIDTH, HEIGHT), 2)  # Border
     screen.blit(title_text, (WIDTH + (NOTES_WIDTH - title_width) // 2, 10))  # Position title at the top
 
     # Divide the section into two halves: top half for tabs and bottom half for Move History
@@ -35,15 +41,25 @@ def draw_notes(screen, board):
     draw_tab(screen, WIDTH + 2 * tab_width, 50, tab_width, TAB_HEIGHT, "Engine Lines", selected_tab == "Engine Lines", 2)
 
     # Draw "Move History" title in the bottom half
-    draw_move_history(screen, font, tab_width * 3, half_height + 60, board)
+    draw_move_history(screen, font, half_height + 60, board)
+
+    # Get the current time in milliseconds
+    current_time = pygame.time.get_ticks()
+
+    # Only update content if 2 seconds have passed
 
     # Draw content based on the selected tab
     y_offset = 100
     if selected_tab == "Saved Lines":
+        pygame.draw.rect(screen, BACKGROUND_COLOR, (WIDTH, 50 + TAB_HEIGHT, NOTES_WIDTH, half_height - 30))  # Background
         saved_lines.draw_section(screen, font, y_offset)
     elif selected_tab == "Stats":
+        pygame.draw.rect(screen, BACKGROUND_COLOR, (WIDTH, 50 + TAB_HEIGHT, NOTES_WIDTH, half_height - 30))  # Background
         stats.draw_section(screen, font, y_offset)
-    elif selected_tab == "Engine Lines":
+    elif selected_tab == "Engine Lines" and current_time - last_draw_time >= DRAW_INTERVAL:
+        # Update the last draw time
+        last_draw_time = current_time
+        pygame.draw.rect(screen, BACKGROUND_COLOR, (WIDTH, 50 + TAB_HEIGHT, NOTES_WIDTH, half_height - 30))  # Background
         engine.draw_section(screen, board, font, y_offset)
 
 
