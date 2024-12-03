@@ -1,24 +1,15 @@
 import pygame
-from config import WIDTH, HEIGHT, NOTES_WIDTH, TAB_HEIGHT
+from config import WIDTH, HEIGHT, NOTES_WIDTH, TAB_HEIGHT, WHITE, BLACK, BACKGROUND_COLOR, TAB_ACTIVE_COLOR, TAB_INACTIVE_COLOR
 from move_history import draw_move_history
+import saved_lines
+import stats
+import engine
 
 # Initialize Pygame font system explicitly
 pygame.font.init()
 
-# Colors
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-BACKGROUND_COLOR = (240, 240, 240)
-TAB_ACTIVE_COLOR = (150, 150, 150)
-TAB_INACTIVE_COLOR = (220, 220, 220)
-
 # Font for notes
 font = pygame.font.Font(None, 45)
-
-# List to hold the notes
-notes = ["This will have saved_lines"]
-stats = ["This shall be the stats area"]
-engine_lines = ["This will have engine lines"]
 
 # Initialize the selected tab to 'My Notes'
 selected_tab = "Saved Lines"
@@ -49,20 +40,11 @@ def draw_notes(screen, board):
     # Draw content based on the selected tab
     y_offset = 100
     if selected_tab == "Saved Lines":
-        for note in notes:
-            note_text = font.render(note, True, BLACK)
-            screen.blit(note_text, (WIDTH + 20, y_offset))
-            y_offset += 40
+        saved_lines.draw_section(screen, font, y_offset)
     elif selected_tab == "Stats":
-        for stat in stats:
-            stat_text = font.render(stat, True, BLACK)
-            screen.blit(stat_text, (WIDTH + 20, y_offset))
-            y_offset += 40
+        stats.draw_section(screen, font, y_offset)
     elif selected_tab == "Engine Lines":
-        for line in engine_lines:
-            line_text = font.render(line, True, BLACK)
-            screen.blit(line_text, (WIDTH + 20, y_offset))
-            y_offset += 40
+        engine.draw_section(screen, font, y_offset)
 
 
 def draw_tab(screen, x, y, width, height, text, is_active, index):

@@ -35,7 +35,7 @@ def main():
             if event.type == MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = event.pos
                 if mouse_x >= WIDTH:  # Only check if the click was in the notes section
-                    if mouse_y - 50 < TAB_HEIGHT:
+                    if 0 < mouse_y - 50 < TAB_HEIGHT:
                         notes.handle_tab_click(mouse_x, mouse_y)
                 else:
                     col, row = mouse_x // SQUARE_SIZE, (HEIGHT - mouse_y) // SQUARE_SIZE
