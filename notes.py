@@ -37,7 +37,7 @@ def draw_notes(screen, board):
 
     # Draw the tab bar in the top half
     draw_tab(screen, WIDTH, 50, tab_width, TAB_HEIGHT, "Saved Lines", selected_tab == "Saved Lines", 0)
-    draw_tab(screen, WIDTH + tab_width, 50, tab_width, TAB_HEIGHT, "Stats", selected_tab == "Stats", 1)
+    draw_tab(screen, WIDTH + tab_width, 50, tab_width, TAB_HEIGHT, "Book Lines", selected_tab == "Book Lines", 1)
     draw_tab(screen, WIDTH + 2 * tab_width, 50, tab_width, TAB_HEIGHT, "Engine Lines", selected_tab == "Engine Lines", 2)
 
     # Draw "Move History" title in the bottom half
@@ -53,9 +53,9 @@ def draw_notes(screen, board):
     if selected_tab == "Saved Lines":
         pygame.draw.rect(screen, BACKGROUND_COLOR, (WIDTH, 50 + TAB_HEIGHT, NOTES_WIDTH, half_height - 30))  # Background
         saved_lines.draw_section(screen, font, y_offset)
-    elif selected_tab == "Stats":
+    elif selected_tab == "Book Lines":
         pygame.draw.rect(screen, BACKGROUND_COLOR, (WIDTH, 50 + TAB_HEIGHT, NOTES_WIDTH, half_height - 30))  # Background
-        stats.draw_section(screen, font, y_offset)
+        stats.draw_section(screen, board, font, y_offset)
     elif selected_tab == "Engine Lines" and current_time - last_draw_time >= DRAW_INTERVAL:
         # Update the last draw time
         last_draw_time = current_time
@@ -80,6 +80,6 @@ def handle_tab_click(x, y):
     if 0 <= x < tab_width:
         selected_tab = "Saved Lines"
     elif tab_width <= x < 2 * tab_width:
-        selected_tab = "Stats"
+        selected_tab = "Book Lines"
     elif 2 * tab_width <= x < 3 * tab_width:
         selected_tab = "Engine Lines"
