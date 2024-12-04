@@ -95,6 +95,10 @@ def main():
                     elif selected_button == ">" and temp_move_history:
                         board.push(temp_move_history.pop())
                         update = True
+                    elif selected_button == "Save Line":
+                        notes.saved_lines.add_line_to_notes(board.move_stack)
+                    elif selected_button == "Delete Line":
+                        notes.saved_lines.delete_move(board.move_stack)
                     selected_button = None
                 if dragging_piece:
                     # Check if the move is legal
@@ -124,7 +128,7 @@ def main():
         draw_button(screen, "<", WIDTH, HEIGHT, NOTES_WIDTH // 4, TAB_HEIGHT, font, selected_button)
         draw_button(screen, ">", WIDTH + NOTES_WIDTH // 4, HEIGHT, NOTES_WIDTH // 4, TAB_HEIGHT, font, selected_button)
         draw_button(screen, "Save Line", WIDTH + NOTES_WIDTH // 2, HEIGHT, NOTES_WIDTH // 4, TAB_HEIGHT, font, selected_button)
-        draw_button(screen, "Delete Line", WIDTH + NOTES_WIDTH * 3 // 4, HEIGHT, NOTES_WIDTH // 4, TAB_HEIGHT, font, selected_button)
+        draw_button(screen, "Delete Move", WIDTH + NOTES_WIDTH * 3 // 4, HEIGHT, NOTES_WIDTH // 4, TAB_HEIGHT, font, selected_button)
         pygame.display.flip()
 
         clock.tick(60)

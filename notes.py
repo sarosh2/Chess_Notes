@@ -38,7 +38,7 @@ def draw_notes(screen, board, font, update):
     y_offset = 100
     if selected_tab == "Saved Lines" and update:
         pygame.draw.rect(screen, BACKGROUND_COLOR, (WIDTH, 50 + TAB_HEIGHT, NOTES_WIDTH, half_height - 30))  # Background
-        saved_lines.draw_section(screen, font, y_offset)
+        saved_lines.draw_section(screen, board, font, y_offset)
     elif selected_tab == "Book Lines" and update:
         pygame.draw.rect(screen, BACKGROUND_COLOR, (WIDTH, 50 + TAB_HEIGHT, NOTES_WIDTH, half_height - 30))  # Background
         stats.draw_section(screen, board, font, y_offset)
