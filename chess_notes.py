@@ -73,14 +73,28 @@ def main():
                         elif 3 * width < x < NOTES_WIDTH:
                             selected_button = "Delete Line" 
                 elif mouse_y < HEIGHT:
-                    col, row = mouse_x // SQUARE_SIZE, (HEIGHT - mouse_y) // SQUARE_SIZE
+                    if flip:
+                        # Mirror the column and row calculations if the board is flipped
+                        col, row = 7 - (mouse_x // SQUARE_SIZE), (mouse_y // SQUARE_SIZE)
+                    else:
+                        col, row = mouse_x // SQUARE_SIZE, (HEIGHT - mouse_y) // SQUARE_SIZE
 
                     piece = board.piece_at(chess.square(col, row))
                     if piece:
                         # If a piece is clicked, start dragging it
                         dragging_piece = piece
                         original_square = chess.square(col, row)
-                        offset_x, offset_y = mouse_x - col * SQUARE_SIZE, mouse_y - (HEIGHT - row * SQUARE_SIZE)
+                        if flip:
+                            # Adjust for flipped board
+                            adjusted_col = 7 - col
+                            adjusted_row = row
+                        else:
+                            # Default orientation
+                            adjusted_col = col
+                            adjusted_row = 7 - row
+
+                        offset_x, offset_y = mouse_x - adjusted_col * SQUARE_SIZE, mouse_y - adjusted_row * SQUARE_SIZE
+
                 elif -BUTTON_WIDTH < mouse_x - WIDTH < 0:
                     selected_button = "Flip"
 
@@ -89,7 +103,20 @@ def main():
                     # If dragging, update the position of the piece
                     mouse_x, mouse_y = event.pos
                     if mouse_x < WIDTH - 40 and mouse_y < HEIGHT - 40:
-                        offset_x, offset_y = mouse_x - (original_square % 8) * SQUARE_SIZE, mouse_y - (HEIGHT - (original_square // 8) * SQUARE_SIZE)
+                        original_col = original_square % 8
+                        original_row = original_square // 8
+
+                        if flip:
+                            # Adjust for flipped board
+                            adjusted_col = 7 - original_col
+                            adjusted_row = original_row
+                        else:
+                            # Default orientation
+                            adjusted_col = original_col
+                            adjusted_row = 7 - original_row
+
+                        offset_x = mouse_x - adjusted_col * SQUARE_SIZE
+                        offset_y = mouse_y - adjusted_row * SQUARE_SIZE
 
             if event.type == MOUSEBUTTONUP:
                 if selected_button != None:
