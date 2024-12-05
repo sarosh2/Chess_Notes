@@ -1,5 +1,8 @@
 import pygame
 from config import SQUARE_SIZE, WIDTH, HEIGHT
+import chess
+import tkinter as tk
+from tkinter import filedialog
 
 # Colors for the board
 YELLOW = (240, 217, 181)  # #F0D9B5
@@ -35,3 +38,50 @@ def draw_board(screen, flip):
                 text = font.render(file_label, True, text_color)
                 screen.blit(text, (col * SQUARE_SIZE + SQUARE_SIZE - text.get_width() - 5, row * SQUARE_SIZE + SQUARE_SIZE - text.get_height() - 5))  # Adjust position
 
+def upload_pgn_dialog():
+    import tkinter as tk
+from tkinter import filedialog
+import chess.pgn
+
+def upload_pgn_dialog():
+    # Hide the root tkinter window
+    root = tk.Tk()
+    root.withdraw()
+    root.attributes('-topmost', True)  # Bring the dialog to the front
+
+    # Open file dialog to select the PGN file
+    file_path = filedialog.askopenfilename(title="Select a PGN File", filetypes=[("PGN Files", "*.pgn")])
+
+    # Check if the file is a valid PGN file
+    if file_path.lower().endswith('.pgn'):
+        try:
+            # Read the PGN file using python-chess
+            with open(file_path, "r") as pgn_file:
+                game = chess.pgn.read_game(pgn_file)
+            
+            if game:
+                print("PGN loaded successfully. Starting the game...")
+
+                # Extract players' names and the result
+                white_name = game.headers.get("White", "Unknown White")
+                black_name = game.headers.get("Black", "Unknown Black")
+                result = game.headers.get("Result", "Unknown result")
+
+                # Format the result string
+                result_str = f"{white_name} vs {black_name} {result}"
+
+
+                board = game.board()
+
+                # Apply the moves from the PGN game to the board
+                for move in game.mainline_moves():
+                    board.push(move)
+
+                return result_str, board  # Return the loaded game object for further processing
+
+        except Exception as e:
+            print(f"Error loading PGN file: {e}")
+            return None
+    else:
+        print("Selected file is not a valid PGN file.")
+        return None

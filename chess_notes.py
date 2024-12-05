@@ -1,6 +1,6 @@
 import pygame
 import chess
-from board import draw_board
+from board import draw_board, upload_pgn_dialog
 from piece import draw_pieces, load_images
 from promotion import show_promotion_dialog
 from pygame.locals import MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEMOTION
@@ -14,7 +14,7 @@ pygame.init()
 pygame.font.init()
 
 # Font for notes
-font = pygame.font.Font(None, 35)
+font = pygame.font.Font(None, 30)
 
 # Adjust the width of the screen to include space for notes
 screen_width = WIDTH + NOTES_WIDTH
@@ -45,7 +45,7 @@ def main():
     pygame.draw.rect(screen, BLACK, (WIDTH, 0, NOTES_WIDTH, HEIGHT), 2)  # Border
     screen.blit(title_text, (WIDTH + (NOTES_WIDTH - title_width) // 2, 10))  # Position title at the top
 
-    draw_button(screen, "Welcome To The Deep Dark Forest", 0, HEIGHT, WIDTH - BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
+    title = "Welcome To The Deep Dark Forest"
 
     running = True
 
@@ -95,6 +95,8 @@ def main():
 
                         offset_x, offset_y = mouse_x - adjusted_col * SQUARE_SIZE, mouse_y - adjusted_row * SQUARE_SIZE
 
+                elif -2 * BUTTON_WIDTH < mouse_x - WIDTH < -BUTTON_WIDTH:
+                    selected_button = "Upload PGN"
                 elif -BUTTON_WIDTH < mouse_x - WIDTH < 0:
                     selected_button = "Flip"
 
@@ -132,6 +134,12 @@ def main():
                         notes.saved_lines.delete_move(board.move_stack)
                     elif selected_button == "Flip":
                         flip = not flip
+                    elif selected_button == "Upload PGN":
+                        new_title, new_board = upload_pgn_dialog()
+                        if new_board:
+                            title = new_title
+                            board = new_board
+                            update = True
 
                     selected_button = None
                 if dragging_piece:
@@ -159,6 +167,8 @@ def main():
         notes.draw_notes(screen, board, font, update)  # Draw the notes section
         update = False
 
+        draw_button(screen, title, 0, HEIGHT, WIDTH - 2 * BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
+        draw_button(screen, "Upload PGN", WIDTH - 2 * BUTTON_WIDTH, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
         draw_button(screen, "Flip", WIDTH - BUTTON_WIDTH, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
         draw_button(screen, "<", WIDTH, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
         draw_button(screen, ">", WIDTH + BUTTON_WIDTH, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
