@@ -5,7 +5,7 @@ from piece import draw_pieces, load_images
 from promotion import show_promotion_dialog
 from pygame.locals import MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEMOTION
 import notes  # Import the notes module
-from config import WIDTH, NOTES_WIDTH, HEIGHT, SQUARE_SIZE, TAB_HEIGHT, BACKGROUND_COLOR, BLACK
+from config import WIDTH, NOTES_WIDTH, HEIGHT, SQUARE_SIZE, TAB_HEIGHT, BACKGROUND_COLOR, BLACK, BUTTON_WIDTH
 from buttons import draw_button, handle_button_click
 
 # Initialize Pygame
@@ -34,6 +34,7 @@ def main():
     selected_button = None
     offset_x, offset_y = 0, 0  # Offset for mouse dragging
     update = True
+    flip = False
 
     # Draw the title "My Notes" at the top, centered
     title_text = font.render("My Notes", True, BLACK)
@@ -44,7 +45,7 @@ def main():
     pygame.draw.rect(screen, BLACK, (WIDTH, 0, NOTES_WIDTH, HEIGHT), 2)  # Border
     screen.blit(title_text, (WIDTH + (NOTES_WIDTH - title_width) // 2, 10))  # Position title at the top
 
-    draw_button(screen, "Welcome To The Deep Dark Forest", 0, HEIGHT, WIDTH, TAB_HEIGHT, font, selected_button)
+    draw_button(screen, "Welcome To The Deep Dark Forest", 0, HEIGHT, WIDTH - BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
 
     running = True
 
@@ -62,6 +63,7 @@ def main():
                     elif 0 < mouse_y - HEIGHT < TAB_HEIGHT:
                         x = mouse_x - WIDTH
                         width = NOTES_WIDTH // 4
+
                         if 0 < x < width:
                             selected_button = "<"
                         elif width < x < 2 * width:
@@ -70,7 +72,7 @@ def main():
                             selected_button = "Save Line"
                         elif 3 * width < x < NOTES_WIDTH:
                             selected_button = "Delete Line" 
-                else:
+                elif mouse_y < HEIGHT:
                     col, row = mouse_x // SQUARE_SIZE, (HEIGHT - mouse_y) // SQUARE_SIZE
 
                     piece = board.piece_at(chess.square(col, row))
@@ -79,12 +81,14 @@ def main():
                         dragging_piece = piece
                         original_square = chess.square(col, row)
                         offset_x, offset_y = mouse_x - col * SQUARE_SIZE, mouse_y - (HEIGHT - row * SQUARE_SIZE)
+                elif -BUTTON_WIDTH < mouse_x - WIDTH < 0:
+                    selected_button = "Flip"
 
             if event.type == MOUSEMOTION:
                 if dragging_piece:
                     # If dragging, update the position of the piece
                     mouse_x, mouse_y = event.pos
-                    if mouse_x < WIDTH - 40:
+                    if mouse_x < WIDTH - 40 and mouse_y < HEIGHT - 40:
                         offset_x, offset_y = mouse_x - (original_square % 8) * SQUARE_SIZE, mouse_y - (HEIGHT - (original_square // 8) * SQUARE_SIZE)
 
             if event.type == MOUSEBUTTONUP:
@@ -99,6 +103,9 @@ def main():
                         notes.saved_lines.add_line_to_notes(board.move_stack)
                     elif selected_button == "Delete Line":
                         notes.saved_lines.delete_move(board.move_stack)
+                    elif selected_button == "Flip":
+                        flip = not flip
+
                     selected_button = None
                 if dragging_piece:
                     # Check if the move is legal
@@ -120,15 +127,16 @@ def main():
                     dragging_piece = None
                     original_square = None
 
-        draw_board(screen)  # Draw the board
-        draw_pieces(screen, board, dragging_piece, original_square, offset_x, offset_y)  # Draw the pieces with drag offset
+        draw_board(screen, flip)  # Draw the board
+        draw_pieces(screen, board, flip, dragging_piece, original_square, offset_x, offset_y)  # Draw the pieces with drag offset
         notes.draw_notes(screen, board, font, update)  # Draw the notes section
         update = False
 
-        draw_button(screen, "<", WIDTH, HEIGHT, NOTES_WIDTH // 4, TAB_HEIGHT, font, selected_button)
-        draw_button(screen, ">", WIDTH + NOTES_WIDTH // 4, HEIGHT, NOTES_WIDTH // 4, TAB_HEIGHT, font, selected_button)
-        draw_button(screen, "Save Line", WIDTH + NOTES_WIDTH // 2, HEIGHT, NOTES_WIDTH // 4, TAB_HEIGHT, font, selected_button)
-        draw_button(screen, "Delete Move", WIDTH + NOTES_WIDTH * 3 // 4, HEIGHT, NOTES_WIDTH // 4, TAB_HEIGHT, font, selected_button)
+        draw_button(screen, "Flip", WIDTH - BUTTON_WIDTH, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
+        draw_button(screen, "<", WIDTH, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
+        draw_button(screen, ">", WIDTH + BUTTON_WIDTH, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
+        draw_button(screen, "Save Line", WIDTH + BUTTON_WIDTH * 2, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
+        draw_button(screen, "Delete Move", WIDTH + BUTTON_WIDTH * 3, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
         pygame.display.flip()
 
         clock.tick(60)
