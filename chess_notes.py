@@ -162,7 +162,7 @@ def main():
                     elif selected_button == BUTTONS[1]:
                         new_title, new_board = upload_pgn_dialog()
                         if new_board:
-                            title = new_title
+                            game_title = new_title
                             board = new_board
                             update = True
                     elif selected_button == BUTTONS[2]:
