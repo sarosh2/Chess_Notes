@@ -1,24 +1,24 @@
 # move_history.py
 
 import pygame
-from config import WIDTH, NOTES_WIDTH, TAB_HEIGHT, HEIGHT, BACKGROUND_COLOR
+from config import WIDTH, NOTES_WIDTH, TAB_HEIGHT, HEIGHT, BACKGROUND_COLOR, MOVE_HISTORY_TITLE, BLACK, TAB_ACTIVE_COLOR, BORDER_THICKNESS, TEXT_Y_OFFSET
 
 def draw_move_history(screen, font, height, board):
     """Draw the move history section under 'Move History'."""
     # Draw "Move History" title
     
-    move_history_title = font.render("Move History", True, (0, 0, 0))
+    move_history_title = font.render(MOVE_HISTORY_TITLE, True, BLACK)
     move_history_title_width = move_history_title.get_width()
     pygame.draw.rect(screen, BACKGROUND_COLOR, (WIDTH, height, NOTES_WIDTH, HEIGHT - height))  # Background
-    pygame.draw.rect(screen, (150, 150, 150), (WIDTH, height, NOTES_WIDTH, TAB_HEIGHT))
-    pygame.draw.rect(screen, (0, 0, 0), (WIDTH, height, NOTES_WIDTH, TAB_HEIGHT), 2)  # Border of the tab
+    pygame.draw.rect(screen, TAB_ACTIVE_COLOR, (WIDTH, height, NOTES_WIDTH, TAB_HEIGHT))
+    pygame.draw.rect(screen, BLACK, (WIDTH, height, NOTES_WIDTH, TAB_HEIGHT), BORDER_THICKNESS)  # Border of the tab
     
     screen.blit(move_history_title, (WIDTH + (NOTES_WIDTH - move_history_title_width) // 2, height + (TAB_HEIGHT - move_history_title.get_height()) // 2))  # Center the title
 
     # Define offsets and section widths
     left_x = WIDTH + 20  # Left side (White moves)
     right_x = WIDTH + NOTES_WIDTH // 4 + 20  # Right side (Black moves)
-    y_offset = height + 50  # Start below the title
+    y_offset = height + TEXT_Y_OFFSET  # Start below the title
 
     # Split moves into White's and Black's moves
     white_moves = []  # Store white's moves

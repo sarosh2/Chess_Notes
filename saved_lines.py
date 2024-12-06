@@ -1,10 +1,7 @@
 import os
 import json
 from chess import Board  # Assuming you're using python-chess for board handling
-from config import BLACK, WIDTH
-
-# Constants
-NOTES_FILE_PATH = "saved_lines/my_notes"
+from config import BLACK, WIDTH, NOTES_FILE_PATH, TEXT_X_OFFSET, MAX_MOVES_PER_COLUMN, COLUMN_OFFSET, ROW_OFFSET
 
 # Function to load notes from file or create new if the file doesn't exist
 def load_notes():
@@ -31,13 +28,16 @@ def add_note_to_position(fen, san_move):
         save_notes(notes)
 
 def add_line_to_notes(moves):
-    temp_board = Board()
-    for move in moves:
-        san_move = temp_board.san(move)
-        fen = temp_board.fen()
-        add_note_to_position(fen, san_move)
-        temp_board.push(move)
-    print("Saved New Line Successfully")
+    if moves:
+        temp_board = Board()
+        for move in moves:
+            san_move = temp_board.san(move)
+            fen = temp_board.fen()
+            add_note_to_position(fen, san_move)
+            temp_board.push(move)
+        print("Saved Line Successfully")
+    else:
+        print("No moves were given")
 
 def delete_move(moves):
 
@@ -52,6 +52,8 @@ def delete_move(moves):
             notes[fen].remove(temp_board.san(move))
             print("Move Deleted Successfully")
             save_notes(notes)
+        else:
+            print("Move not found in saved moves")
 
 # Function to draw the section displaying the notes
 def draw_section(screen, board, font, y_offset_const):
@@ -63,8 +65,8 @@ def draw_section(screen, board, font, y_offset_const):
 
         # Initialize column offset and maximum number of moves per column
         y_offset = y_offset_const
-        x_offset = WIDTH + 20
-        max_moves_per_column = 8
+        x_offset = WIDTH + TEXT_X_OFFSET
+        max_moves_per_column = MAX_MOVES_PER_COLUMN
         current_column = 0
 
         for i, note in enumerate(notes[fen]):
@@ -72,7 +74,7 @@ def draw_section(screen, board, font, y_offset_const):
             if i > 0 and i % max_moves_per_column == 0:
                 y_offset = y_offset_const  # Reset y_offset
                 current_column += 1  # Move to the next column
-                x_offset += 200  # Add some horizontal space between columns (adjust as needed)
+                x_offset += COLUMN_OFFSET  # Add some horizontal space between columns (adjust as needed)
             note_text = font.render(note, True, BLACK)
             screen.blit(note_text, (x_offset, y_offset))
-            y_offset += 40
+            y_offset += ROW_OFFSET

@@ -1,9 +1,6 @@
 import pygame
 import chess
-from config import SQUARE_SIZE
-
-# Dictionary to store images for the pieces
-PIECE_IMAGES = {}
+from config import SQUARE_SIZE, PIECE_IMAGES
 
 def load_images():
     """Load all chess piece images."""
@@ -12,7 +9,6 @@ def load_images():
         try:
             PIECE_IMAGES[piece] = pygame.image.load(f"assets/{piece}.png")
             PIECE_IMAGES[piece] = pygame.transform.scale(PIECE_IMAGES[piece], (SQUARE_SIZE, SQUARE_SIZE))
-            print(f"Loaded image for {piece}")
         except pygame.error:
             print(f"Failed to load image for {piece}")
 

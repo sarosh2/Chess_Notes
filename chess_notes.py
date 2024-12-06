@@ -1,54 +1,72 @@
+#modules for running the app
 import pygame
-import chess
+from pygame.locals import MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEMOTION
+
+import chess #modules for handling chess stuff
+
+#functions for rendering and utility
 from board import draw_board, upload_pgn_dialog
 from piece import draw_pieces, load_images
 from promotion import show_promotion_dialog
-from pygame.locals import MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEMOTION
-import notes  # Import the notes module
-from config import WIDTH, NOTES_WIDTH, HEIGHT, SQUARE_SIZE, TAB_HEIGHT, BACKGROUND_COLOR, BLACK, BUTTON_WIDTH
-from buttons import draw_button, handle_button_click
+from buttons import draw_button
+
+#notes section including move_history and the three tabs (Saved Lines, Book Lines and Engine Lines)
+import notes
+
+#overall configuration constants for the whole app
+from config import WIDTH, NOTES_WIDTH, HEIGHT, SQUARE_SIZE, TAB_HEIGHT, BACKGROUND_COLOR, BLACK, BUTTON_WIDTH, FONT_SIZE, APP_TITLE, GAME_TITLE
 
 # Initialize Pygame
 pygame.init()
-
 pygame.font.init()
 
-# Font for notes
-font = pygame.font.Font(None, 30)
+# Font for notes and all text in the app
+font = pygame.font.Font(None, FONT_SIZE)
 
-# Adjust the width of the screen to include space for notes
+# Adjust the width and height of the screen to include space for notes and buttons
 screen_width = WIDTH + NOTES_WIDTH
-screen = pygame.display.set_mode((screen_width, HEIGHT + TAB_HEIGHT))
-pygame.display.set_caption("Chess Notes")
+screen_height = HEIGHT + TAB_HEIGHT
 
+#start the app
+screen = pygame.display.set_mode((screen_width, screen_height))
+pygame.display.set_caption(APP_TITLE)
+
+#initialize variables for a new game
+def setup_new_game():
+    global board, dragging_piece, original_square, selected_button
+    global offset_x, offset_y, update, flip, sideline
+    global temp_move_history, sideline_history, sideline_base_pos, game_title
+    
+    # Initialize all variables
+    board = chess.Board() #the board that has the current position and move history
+    dragging_piece = None  # The piece being dragged
+    original_square = None  # The original position of the piece being dragged
+    selected_button = None
+    offset_x, offset_y = 0, 0  # Offset for mouse dragging
+    update = True #used to update the notes section when relevant instead of constantly like the board
+    flip = False #used to track if board is flipped or not
+    sideline = False #used to track if the game is in the main line or a side line
+    temp_move_history = [] #keeps track of the main line moves that aren't on the board
+    sideline_history = [] #keeps track of side line moves that aren't on the board
+    sideline_base_pos = None #the base position where the sideline and the mainline meet
+    game_title = GAME_TITLE #title of the current game (includes player names and result when a PGN is loaded)
+    
 def main():
-    clock = pygame.time.Clock()
-    board = chess.Board()
+    
+    #setup the app
+    setup_new_game()
+    global board, dragging_piece, original_square, selected_button
+    global offset_x, offset_y, update, flip, sideline
+    global temp_move_history, sideline_history, sideline_base_pos, game_title
 
+    #clock to manage FPS
+    clock = pygame.time.Clock()
+    
     # Load images (called once at the start)
     load_images()
 
-    dragging_piece = None  # The piece being dragged
-    original_square = None  # The original position of the piece
-    selected_button = None
-    offset_x, offset_y = 0, 0  # Offset for mouse dragging
-    update = True
-    flip = False
-    sideline = False
-    temp_move_history = []
-    sideline_history = []
-    sideline_base_pos = None
-
     # Draw the title "My Notes" at the top, centered
-    title_text = font.render("My Notes", True, BLACK)
-    title_width = title_text.get_width()
-
-    # Draw background for notes section
-    pygame.draw.rect(screen, BACKGROUND_COLOR, (WIDTH, 0, NOTES_WIDTH, 50))  # Background
-    pygame.draw.rect(screen, BLACK, (WIDTH, 0, NOTES_WIDTH, HEIGHT), 2)  # Border
-    screen.blit(title_text, (WIDTH + (NOTES_WIDTH - title_width) // 2, 10))  # Position title at the top
-
-    title = "Welcome To The Deep Dark Forest"
+    notes.draw_title(screen, font)
 
     running = True
 
@@ -157,20 +175,7 @@ def main():
                             board = new_board
                             update = True
                     elif selected_button == "Reset":
-                        board = chess.Board()
-                        dragging_piece = None  # The piece being dragged
-                        original_square = None  # The original position of the piece
-                        selected_button = None
-                        offset_x, offset_y = 0, 0  # Offset for mouse dragging
-                        update = True
-                        flip = False
-                        sideline = False
-                        temp_move_history = []
-                        sideline_history = []
-                        sideline_base_pos = None
-
-                        # Draw the title "My Notes" at the top, centered
-                        title_text = font.render("My Notes", True, BLACK)
+                        setup_new_game()
 
                     selected_button = None
                 if dragging_piece:
@@ -188,7 +193,7 @@ def main():
                         # Make the move if it's legal
                         promotion_piece = None
                         if piece.symbol() == 'P' and board.turn == chess.WHITE and target_square // 8 == 7 or piece.symbol() == 'p' and board.turn == chess.BLACK and target_square // 8 == 0:
-                            promotion_piece = show_promotion_dialog(screen, SQUARE_SIZE, piece.color, col, row)
+                            promotion_piece = show_promotion_dialog(screen, piece.color, col, row)
 
                         move = chess.Move(original_square, target_square, promotion_piece)
                         if board.is_legal(move):
@@ -218,7 +223,7 @@ def main():
         notes.draw_notes(screen, board, font, update)  # Draw the notes section
         update = False
 
-        draw_button(screen, title, 0, HEIGHT, WIDTH - 3 * BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
+        draw_button(screen, game_title, 0, HEIGHT, WIDTH - 3 * BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
         draw_button(screen, "Reset", WIDTH - 3 * BUTTON_WIDTH, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
         draw_button(screen, "Upload PGN", WIDTH - 2 * BUTTON_WIDTH, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
         draw_button(screen, "Flip", WIDTH - BUTTON_WIDTH, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
