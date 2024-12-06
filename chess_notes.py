@@ -14,7 +14,7 @@ from buttons import draw_button
 import notes
 
 #overall configuration constants for the whole app
-from config import WIDTH, NOTES_WIDTH, HEIGHT, SQUARE_SIZE, TAB_HEIGHT, BACKGROUND_COLOR, BLACK, BUTTON_WIDTH, FONT_SIZE, APP_TITLE, GAME_TITLE
+from config import WIDTH, NOTES_WIDTH, HEIGHT, SQUARE_SIZE, TAB_HEIGHT, BACKGROUND_COLOR, BLACK, BUTTON_WIDTH, FONT_SIZE, APP_TITLE, GAME_TITLE, BUTTONS, BOARD_MOUSE_LIMIT
 
 # Initialize Pygame
 pygame.init()
@@ -77,23 +77,39 @@ def main():
 
             if event.type == MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = event.pos
-                if mouse_x >= WIDTH:  # Only check if the click was in the notes section
-                    if 0 < mouse_y - 50 < TAB_HEIGHT:
+                
+                #check for button presses
+                if 0 < mouse_y - HEIGHT < TAB_HEIGHT:
+                    x = mouse_x - WIDTH
+                    if -3 * BUTTON_WIDTH < x < - 2 *BUTTON_WIDTH:
+                        selected_button = BUTTONS[0]
+
+                    elif -2 * BUTTON_WIDTH < x < -BUTTON_WIDTH:
+                        selected_button = BUTTONS[1]
+
+                    elif -BUTTON_WIDTH < x < 0:
+                        selected_button = BUTTONS[2]
+
+                    elif 0 < x < BUTTON_WIDTH:
+                        selected_button = BUTTONS[3]
+
+                    elif BUTTON_WIDTH < x < 2 * BUTTON_WIDTH:
+                        selected_button = BUTTONS[4]
+
+                    elif 2 * BUTTON_WIDTH < x < 3 * BUTTON_WIDTH:
+                        selected_button = BUTTONS[5]
+
+                    elif 3 * BUTTON_WIDTH < x < NOTES_WIDTH:
+                        selected_button = BUTTONS[6]
+
+                #check for tab switch
+                elif mouse_x >= WIDTH:  # Only check if the click was in the notes section
+                    if 0 < mouse_y - TAB_HEIGHT < TAB_HEIGHT:
                         notes.handle_tab_click(mouse_x, mouse_y)
                         update = True
-                    elif 0 < mouse_y - HEIGHT < TAB_HEIGHT:
-                        x = mouse_x - WIDTH
-                        width = NOTES_WIDTH // 4
 
-                        if 0 < x < width:
-                            selected_button = "<"
-                        elif width < x < 2 * width:
-                            selected_button = ">"
-                        elif 2 * width < x < 3 * width:
-                            selected_button = "Save Line"
-                        elif 3 * width < x < NOTES_WIDTH:
-                            selected_button = "Delete Move" 
-                elif mouse_y < HEIGHT:
+                #check for piece manipulation on board
+                else:
                     if flip:
                         # Mirror the column and row calculations if the board is flipped
                         col, row = 7 - (mouse_x // SQUARE_SIZE), (mouse_y // SQUARE_SIZE)
@@ -116,18 +132,11 @@ def main():
 
                         offset_x, offset_y = mouse_x - adjusted_col * SQUARE_SIZE, mouse_y - adjusted_row * SQUARE_SIZE
 
-                elif -3 * BUTTON_WIDTH < mouse_x - WIDTH < - 2 *BUTTON_WIDTH:
-                    selected_button = "Reset"
-                elif -2 * BUTTON_WIDTH < mouse_x - WIDTH < -BUTTON_WIDTH:
-                    selected_button = "Upload PGN"
-                elif -BUTTON_WIDTH < mouse_x - WIDTH < 0:
-                    selected_button = "Flip"
-
             if event.type == MOUSEMOTION:
                 if dragging_piece:
                     # If dragging, update the position of the piece
                     mouse_x, mouse_y = event.pos
-                    if mouse_x < WIDTH - 40 and mouse_y < HEIGHT - 40:
+                    if mouse_x < WIDTH - BOARD_MOUSE_LIMIT and mouse_y < HEIGHT - BOARD_MOUSE_LIMIT:
                         original_col = original_square % 8
                         original_row = original_square // 8
 
@@ -144,8 +153,21 @@ def main():
                         offset_y = mouse_y - adjusted_row * SQUARE_SIZE
 
             if event.type == MOUSEBUTTONUP:
+
+                #Perform button click action
                 if selected_button != None:
-                    if selected_button == "<" and board.move_stack:
+                    
+                    if selected_button == BUTTONS[0]:
+                        setup_new_game()
+                    elif selected_button == BUTTONS[1]:
+                        new_title, new_board = upload_pgn_dialog()
+                        if new_board:
+                            title = new_title
+                            board = new_board
+                            update = True
+                    elif selected_button == BUTTONS[2]:
+                        flip = not flip
+                    elif selected_button == BUTTONS[3] and board.move_stack:
                         if sideline:
                             sideline_history.append(board.pop())
                             if board.fen() == sideline_base_pos:
@@ -155,29 +177,21 @@ def main():
                         else:
                             temp_move_history.append(board.pop())
                         update = True
-                    elif selected_button == ">":
+                    elif selected_button == BUTTONS[4]:
                         if sideline:
                             if sideline_history:
                                 board.push(sideline_history.pop())
                         elif temp_move_history:
                             board.push(temp_move_history.pop())
                         update = True
-                    elif selected_button == "Save Line":
+                    elif selected_button == BUTTONS[5]:
                         notes.saved_lines.add_line_to_notes(board.move_stack)
-                    elif selected_button == "Delete Move":
+                    elif selected_button == BUTTONS[6]:
                         notes.saved_lines.delete_move(board.move_stack)
-                    elif selected_button == "Flip":
-                        flip = not flip
-                    elif selected_button == "Upload PGN":
-                        new_title, new_board = upload_pgn_dialog()
-                        if new_board:
-                            title = new_title
-                            board = new_board
-                            update = True
-                    elif selected_button == "Reset":
-                        setup_new_game()
 
                     selected_button = None
+
+                #perform piece movement
                 if dragging_piece:
                     # Check if the move is legal
                     mouse_x, mouse_y = event.pos
@@ -224,13 +238,13 @@ def main():
         update = False
 
         draw_button(screen, game_title, 0, HEIGHT, WIDTH - 3 * BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
-        draw_button(screen, "Reset", WIDTH - 3 * BUTTON_WIDTH, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
-        draw_button(screen, "Upload PGN", WIDTH - 2 * BUTTON_WIDTH, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
-        draw_button(screen, "Flip", WIDTH - BUTTON_WIDTH, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
-        draw_button(screen, "<", WIDTH, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
-        draw_button(screen, ">", WIDTH + BUTTON_WIDTH, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
-        draw_button(screen, "Save Line", WIDTH + BUTTON_WIDTH * 2, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
-        draw_button(screen, "Delete Move", WIDTH + BUTTON_WIDTH * 3, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
+        draw_button(screen, BUTTONS[0], WIDTH - 3 * BUTTON_WIDTH, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
+        draw_button(screen, BUTTONS[1], WIDTH - 2 * BUTTON_WIDTH, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
+        draw_button(screen, BUTTONS[2], WIDTH - BUTTON_WIDTH, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
+        draw_button(screen, BUTTONS[3], WIDTH, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
+        draw_button(screen, BUTTONS[4], WIDTH + BUTTON_WIDTH, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
+        draw_button(screen, BUTTONS[5], WIDTH + BUTTON_WIDTH * 2, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
+        draw_button(screen, BUTTONS[6], WIDTH + BUTTON_WIDTH * 3, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
         pygame.display.flip()
 
         clock.tick(60)
