@@ -20,7 +20,6 @@ font = pygame.font.Font(None, 30)
 screen_width = WIDTH + NOTES_WIDTH
 screen = pygame.display.set_mode((screen_width, HEIGHT + TAB_HEIGHT))
 pygame.display.set_caption("Chess Notes")
-temp_move_history = []
 
 def main():
     clock = pygame.time.Clock()
@@ -35,6 +34,9 @@ def main():
     offset_x, offset_y = 0, 0  # Offset for mouse dragging
     update = True
     flip = False
+    sideline = False
+    temp_move_history = []
+    sideline_history = []
 
     # Draw the title "My Notes" at the top, centered
     title_text = font.render("My Notes", True, BLACK)
@@ -123,10 +125,18 @@ def main():
             if event.type == MOUSEBUTTONUP:
                 if selected_button != None:
                     if selected_button == "<" and board.move_stack:
-                        temp_move_history.append(board.pop())
+                        if sideline:
+                            sideline_history.append(board.pop())
+                            if board.san(temp_move_history[-1]):
+                                sideline = False
+                        else:
+                            temp_move_history.append(board.pop())
                         update = True
                     elif selected_button == ">" and temp_move_history:
-                        board.push(temp_move_history.pop())
+                        if sideline:
+                            board.push(sideline_history.pop())
+                        else:
+                            board.push(temp_move_history.pop())
                         update = True
                     elif selected_button == "Save Line":
                         notes.saved_lines.add_line_to_notes(board.move_stack)
@@ -156,13 +166,20 @@ def main():
 
                         if board.is_legal(chess.Move(original_square, target_square, promotion_piece)):
                             board.push(chess.Move(original_square, target_square, promotion_piece))
-                            temp_move_history.clear()
+                            if temp_move_history:
+                                if board.move_stack[-1] == temp_move_history[-1]:
+                                    temp_move_history.pop()
+                                else:
+                                    sideline = True
+                            if sideline_history:
+                                sideline_history.clear()
+
                             update = True
                     # Reset dragging
                     dragging_piece = None
                     original_square = None
 
-        draw_board(screen, flip)  # Draw the board
+        draw_board(screen, flip, sideline)  # Draw the board
         draw_pieces(screen, board, flip, dragging_piece, original_square, offset_x, offset_y)  # Draw the pieces with drag offset
         notes.draw_notes(screen, board, font, update)  # Draw the notes section
         update = False
