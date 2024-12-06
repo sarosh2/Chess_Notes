@@ -19,12 +19,12 @@
 1. **Clone the Repository:**
    Clone the Chess Notes repository to your local machine:
    ```bash
-   git clone https://github.com/yourusername/chess-notes.git
+   git clone https://github.com/sarosh2/Chess_Notes.git
 
 ## Features
 
 ### 1. **Opening Database Compilation**
-Chess Notes supports compiling opening books from multiple **Polyglot** `.bin` books. The database includes a collection of 15.9 million games categorized into six parts.
+Chess Notes supports compiling opening books from multiple **Polyglot** `.bin` books. The database I personally used includes a collection of 15.9 million games categorized into six parts.
 
 #### Instructions:
 - Download the opening book collection from [here](https://sourceforge.net/projects/codekiddy-chess/files/Books/Polyglot%20books/Update1/polyglot-collection.7z/download).
