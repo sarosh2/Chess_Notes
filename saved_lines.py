@@ -25,7 +25,6 @@ def add_note_to_position(fen, san_move):
         notes[fen] = []
     if san_move not in notes[fen]:
         notes[fen].append(san_move)
-        save_notes(notes)
 
 def add_line_to_notes(moves):
     if moves:
@@ -35,6 +34,7 @@ def add_line_to_notes(moves):
             fen = temp_board.fen()
             add_note_to_position(fen, san_move)
             temp_board.push(move)
+        save_notes(notes)
         print("Saved Line Successfully")
     else:
         print("No moves were given")
