@@ -74,7 +74,7 @@ def main():
                         elif 2 * width < x < 3 * width:
                             selected_button = "Save Line"
                         elif 3 * width < x < NOTES_WIDTH:
-                            selected_button = "Delete Line" 
+                            selected_button = "Delete Move" 
                 elif mouse_y < HEIGHT:
                     if flip:
                         # Mirror the column and row calculations if the board is flipped
@@ -98,6 +98,8 @@ def main():
 
                         offset_x, offset_y = mouse_x - adjusted_col * SQUARE_SIZE, mouse_y - adjusted_row * SQUARE_SIZE
 
+                elif -3 * BUTTON_WIDTH < mouse_x - WIDTH < - 2 *BUTTON_WIDTH:
+                    selected_button = "Reset"
                 elif -2 * BUTTON_WIDTH < mouse_x - WIDTH < -BUTTON_WIDTH:
                     selected_button = "Upload PGN"
                 elif -BUTTON_WIDTH < mouse_x - WIDTH < 0:
@@ -144,7 +146,7 @@ def main():
                         update = True
                     elif selected_button == "Save Line":
                         notes.saved_lines.add_line_to_notes(board.move_stack)
-                    elif selected_button == "Delete Line":
+                    elif selected_button == "Delete Move":
                         notes.saved_lines.delete_move(board.move_stack)
                     elif selected_button == "Flip":
                         flip = not flip
@@ -154,6 +156,21 @@ def main():
                             title = new_title
                             board = new_board
                             update = True
+                    elif selected_button == "Reset":
+                        board = chess.Board()
+                        dragging_piece = None  # The piece being dragged
+                        original_square = None  # The original position of the piece
+                        selected_button = None
+                        offset_x, offset_y = 0, 0  # Offset for mouse dragging
+                        update = True
+                        flip = False
+                        sideline = False
+                        temp_move_history = []
+                        sideline_history = []
+                        sideline_base_pos = None
+
+                        # Draw the title "My Notes" at the top, centered
+                        title_text = font.render("My Notes", True, BLACK)
 
                     selected_button = None
                 if dragging_piece:
@@ -196,7 +213,8 @@ def main():
         notes.draw_notes(screen, board, font, update)  # Draw the notes section
         update = False
 
-        draw_button(screen, title, 0, HEIGHT, WIDTH - 2 * BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
+        draw_button(screen, title, 0, HEIGHT, WIDTH - 3 * BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
+        draw_button(screen, "Reset", WIDTH - 3 * BUTTON_WIDTH, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
         draw_button(screen, "Upload PGN", WIDTH - 2 * BUTTON_WIDTH, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
         draw_button(screen, "Flip", WIDTH - BUTTON_WIDTH, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
         draw_button(screen, "<", WIDTH, HEIGHT, BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)
