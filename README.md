@@ -14,9 +14,6 @@
     pip install python-chess
     ```
 
-- **Stockfish Engine:**  
-  As mentioned, you will need to download Stockfish and place it in the **engine** folder.
-
 ## Installation
 
 1. **Clone the Repository:**
