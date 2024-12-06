@@ -79,6 +79,7 @@ def upload_pgn_dialog():
                 for move in game.mainline_moves():
                     board.push(move)
 
+                print("Game Started")
                 return result_str, board  # Return the loaded game object for further processing
 
         except Exception as e:

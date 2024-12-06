@@ -27,6 +27,8 @@ MAX_MOVES_PER_COLUMN = 8
 COLUMN_OFFSET = 200
 ROW_OFFSET = 40
 DRAW_INTERVAL = 1500  # 1.5 seconds in milliseconds to draw Engine lines once every interval
+ROW_OFFSET_MOVE_HISTORY = 30
+MAX_MOVES_PER_COLUMN_MOVE_HISTORY = 11
 
 #colors
 BLACK = (0, 0, 0) #used for fonts and base app background

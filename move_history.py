@@ -1,7 +1,7 @@
 # move_history.py
 
 import pygame
-from config import WIDTH, NOTES_WIDTH, TAB_HEIGHT, HEIGHT, BACKGROUND_COLOR, MOVE_HISTORY_TITLE, BLACK, TAB_ACTIVE_COLOR, BORDER_THICKNESS, TEXT_Y_OFFSET, ROW_OFFSET, TEXT_X_OFFSET, MAX_MOVES_PER_COLUMN
+from config import WIDTH, NOTES_WIDTH, TAB_HEIGHT, HEIGHT, BACKGROUND_COLOR, MOVE_HISTORY_TITLE, BLACK, TAB_ACTIVE_COLOR, BORDER_THICKNESS, TEXT_Y_OFFSET, ROW_OFFSET_MOVE_HISTORY, TEXT_X_OFFSET, MAX_MOVES_PER_COLUMN_MOVE_HISTORY
 
 def draw_move_history(screen, font, height, board):
     """Draw the move history section under 'Move History'."""
@@ -33,35 +33,35 @@ def draw_move_history(screen, font, height, board):
 
     # Draw White's moves on the left half
     for i, move in enumerate(white_moves):
-        if i < MAX_MOVES_PER_COLUMN:
+        if i < MAX_MOVES_PER_COLUMN_MOVE_HISTORY:
             move_text = font.render(f"{i + 1}. {move}", True, (0, 0, 0))
             screen.blit(move_text, (left_x, y_offset))
-            y_offset += ROW_OFFSET # Add space between moves
-        elif i == MAX_MOVES_PER_COLUMN:
+            y_offset += ROW_OFFSET_MOVE_HISTORY # Add space between moves
+        elif i == MAX_MOVES_PER_COLUMN_MOVE_HISTORY:
             y_offset = height + TEXT_Y_OFFSET // 2 # Start below the title
             move_text = font.render(f"{i + 1}. {move}", True, (0, 0, 0))
             screen.blit(move_text, (left_x + NOTES_WIDTH // 2, y_offset))
-            y_offset += ROW_OFFSET  # Add space between moves
+            y_offset += ROW_OFFSET_MOVE_HISTORY  # Add space between moves
         else:
             move_text = font.render(f"{i + 1}. {move}", True, (0, 0, 0))
             screen.blit(move_text, (left_x + NOTES_WIDTH // 2, y_offset))
-            y_offset += ROW_OFFSET  # Add space between moves
+            y_offset += ROW_OFFSET_MOVE_HISTORY  # Add space between moves
 
     # Reset y_offset for the right side (Black's moves)
     y_offset = height + TEXT_Y_OFFSET // 2
 
     # Draw Black's moves on the right half
     for i, move in enumerate(black_moves):
-        if i < MAX_MOVES_PER_COLUMN:
+        if i < MAX_MOVES_PER_COLUMN_MOVE_HISTORY:
             move_text = font.render(f"{move}", True, (0, 0, 0))
             screen.blit(move_text, (right_x, y_offset))
-            y_offset += ROW_OFFSET  # Add space between moves
-        elif i == MAX_MOVES_PER_COLUMN:
+            y_offset += ROW_OFFSET_MOVE_HISTORY  # Add space between moves
+        elif i == MAX_MOVES_PER_COLUMN_MOVE_HISTORY:
             y_offset = height + TEXT_Y_OFFSET // 2 # Start below the title
             move_text = font.render(f"{move}", True, (0, 0, 0))
             screen.blit(move_text, (right_x + NOTES_WIDTH // 2, y_offset))
-            y_offset += ROW_OFFSET  # Add space between moves
+            y_offset += ROW_OFFSET_MOVE_HISTORY  # Add space between moves
         else:
             move_text = font.render(f"{move}", True, (0, 0, 0))
             screen.blit(move_text, (right_x + NOTES_WIDTH // 2, y_offset))
-            y_offset += ROW_OFFSET  # Add space between moves
+            y_offset += ROW_OFFSET_MOVE_HISTORY  # Add space between moves
