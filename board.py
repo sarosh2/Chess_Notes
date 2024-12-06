@@ -87,7 +87,7 @@ def upload_pgn_dialog():
 
         except Exception as e:
             print(f"Error loading PGN file: {e}")
-            return None
+            return None, None
     else:
         print("Selected file is not a valid PGN file.")
-        return None
+        return None, None

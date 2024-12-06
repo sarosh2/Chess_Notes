@@ -37,6 +37,7 @@ def main():
     sideline = False
     temp_move_history = []
     sideline_history = []
+    sideline_base_pos = None
 
     # Draw the title "My Notes" at the top, centered
     title_text = font.render("My Notes", True, BLACK)
@@ -127,15 +128,18 @@ def main():
                     if selected_button == "<" and board.move_stack:
                         if sideline:
                             sideline_history.append(board.pop())
-                            if board.san(temp_move_history[-1]):
+                            print(board.fen(), sideline_base_pos)
+                            if board.fen() == sideline_base_pos:
                                 sideline = False
+                                sideline_history.clear()
                         else:
                             temp_move_history.append(board.pop())
                         update = True
-                    elif selected_button == ">" and temp_move_history:
+                    elif selected_button == ">":
                         if sideline:
-                            board.push(sideline_history.pop())
-                        else:
+                            if sideline_history:
+                                board.push(sideline_history.pop())
+                        elif temp_move_history:
                             board.push(temp_move_history.pop())
                         update = True
                     elif selected_button == "Save Line":
@@ -164,15 +168,23 @@ def main():
                         if piece.symbol() == 'P' and board.turn == chess.WHITE and target_square // 8 == 7 or piece.symbol() == 'p' and board.turn == chess.BLACK and target_square // 8 == 0:
                             promotion_piece = show_promotion_dialog(screen, SQUARE_SIZE, piece.color, col, row)
 
-                        if board.is_legal(chess.Move(original_square, target_square, promotion_piece)):
-                            board.push(chess.Move(original_square, target_square, promotion_piece))
-                            if temp_move_history:
-                                if board.move_stack[-1] == temp_move_history[-1]:
-                                    temp_move_history.pop()
-                                else:
-                                    sideline = True
+                        move = chess.Move(original_square, target_square, promotion_piece)
+                        if board.is_legal(move):
+                            
+                            fen = board.fen()
                             if sideline_history:
-                                sideline_history.clear()
+                                if move == sideline_history[-1] and fen == sideline_base_pos:
+                                    sideline_history.pop()
+                                else:
+                                    sideline_history.clear()
+                            elif temp_move_history:
+                                if move == temp_move_history[-1] and fen == sideline_base_pos:
+                                    temp_move_history.pop()
+                                elif not sideline:
+                                    sideline = True
+                                    sideline_base_pos = board.fen()
+
+                            board.push(move)
 
                             update = True
                     # Reset dragging
