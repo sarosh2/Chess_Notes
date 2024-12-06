@@ -177,7 +177,12 @@ def main():
                     # Check if the move is legal
                     mouse_x, mouse_y = event.pos
                     if 0 < mouse_x < WIDTH and 0 < mouse_y < HEIGHT:
-                        col, row = mouse_x // SQUARE_SIZE, (HEIGHT - mouse_y) // SQUARE_SIZE
+                        if flip:
+                            # Adjust the coordinates for a flipped board
+                            col, row = 7 - (mouse_x // SQUARE_SIZE), mouse_y // SQUARE_SIZE
+                        else:
+                            # Default coordinates (no flip)
+                            col, row = mouse_x // SQUARE_SIZE, (HEIGHT - mouse_y) // SQUARE_SIZE
                         target_square = chess.square(col, row)
 
                         # Make the move if it's legal
