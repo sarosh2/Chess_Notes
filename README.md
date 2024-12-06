@@ -2,6 +2,9 @@
 
 **Chess Notes** is a Python application that helps chess players analyze positions, study openings, and save personal analysis. It integrates chess engines, opening databases, and allows players to store and review lines they've studied.
 
+![image](https://github.com/user-attachments/assets/a56dc972-a1bc-4037-b97c-84db86fb9eb8)
+
+
 ## Requirements
 
 - **Python 3.12.2**  
@@ -26,6 +29,9 @@
 ### 1. **Opening Database Compilation**
 Chess Notes supports compiling opening books from multiple **Polyglot** `.bin` books. The database I personally used includes a collection of 15.9 million games categorized into six parts.
 
+![image](https://github.com/user-attachments/assets/e1b0a99c-2bf2-4768-a93a-9d5849cf2aa5)
+
+
 #### Instructions:
 - Download the opening book collection from [here](https://sourceforge.net/projects/codekiddy-chess/files/Books/Polyglot%20books/Update1/polyglot-collection.7z/download).
 - Extract the downloaded `.7z` archive.
@@ -42,6 +48,9 @@ The app integrates with the **Stockfish** chess engine to analyze positions. It 
 
 ### 3. **Saved Lines**
 Chess Notes allows you to store and review positions and moves you've personally analyzed and saved. You can go through these lines for further study and analysis.
+![image](https://github.com/user-attachments/assets/25527af6-de31-474a-b923-5cf4fc60272e)
+
+
 
 ### 4. **PGN Game Upload & Analysis**
 Upload PGN files of games you've played to Chess Notes and analyze them using the integrated engine.
