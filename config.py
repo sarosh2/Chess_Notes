@@ -54,5 +54,7 @@ OPENING_BOOK_PATHS = [
     # Add more paths as needed
 ]
 
+ENGINE_PATH = "engine\stockfish-windows-x86-64-avx2\stockfish\stockfish-windows-x86-64-avx2.exe"
+
 # Dictionary to store images for the pieces
 PIECE_IMAGES = {}

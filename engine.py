@@ -1,10 +1,10 @@
 import threading
 import queue
 import chess.engine
-from config import BLACK, WIDTH
+from config import BLACK, WIDTH, ENGINE_PATH, ROW_OFFSET, TEXT_X_OFFSET
 
 # Initialize Stockfish engine (ensure the path is correct for your system)
-engine = chess.engine.SimpleEngine.popen_uci(r"engine\stockfish-windows-x86-64-avx2\stockfish\stockfish-windows-x86-64-avx2.exe")
+engine = chess.engine.SimpleEngine.popen_uci(ENGINE_PATH)
 
 # Create a queue to send results from the engine thread to the main thread
 result_queue = queue.Queue()
@@ -29,8 +29,8 @@ def draw_section(screen, board, font, y_offset):
     engine_lines = []
     for line in engine_lines:
         line_text = font.render(line, True, BLACK)
-        screen.blit(line_text, (WIDTH + 20, y_offset))
-        y_offset += 40
+        screen.blit(line_text, (WIDTH + TEXT_X_OFFSET, y_offset))
+        y_offset += ROW_OFFSET
 
     # After starting the analysis, check for results in the queue
     analysis_thread.join()  # Wait for the analysis thread to finish
@@ -67,8 +67,8 @@ def draw_section(screen, board, font, y_offset):
             # Display engine lines on the screen
             for line in engine_lines:
                 line_text = font.render(line, True, BLACK)
-                screen.blit(line_text, (WIDTH + 20, y_offset))
-                y_offset += 40
+                screen.blit(line_text, (WIDTH + TEXT_X_OFFSET, y_offset))
+                y_offset += ROW_OFFSET
 
 # Don't forget to quit the engine when done
 def quit_engine():
