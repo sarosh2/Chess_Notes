@@ -130,10 +130,10 @@ def main():
                     if selected_button == "<" and board.move_stack:
                         if sideline:
                             sideline_history.append(board.pop())
-                            print(board.fen(), sideline_base_pos)
                             if board.fen() == sideline_base_pos:
                                 sideline = False
                                 sideline_history.clear()
+                                sideline_base_pos = None
                         else:
                             temp_move_history.append(board.pop())
                         update = True
@@ -195,7 +195,7 @@ def main():
                                 else:
                                     sideline_history.clear()
                             elif temp_move_history:
-                                if move == temp_move_history[-1] and fen == sideline_base_pos:
+                                if move == temp_move_history[-1] and (not sideline_base_pos or fen == sideline_base_pos):
                                     temp_move_history.pop()
                                 elif not sideline:
                                     sideline = True
