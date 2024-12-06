@@ -48,6 +48,7 @@ The app integrates with the **Stockfish** chess engine to analyze positions. It 
 
 ### 3. **Saved Lines**
 Chess Notes allows you to store and review positions and moves you've personally analyzed and saved. You can go through these lines for further study and analysis.
+
 ![image](https://github.com/user-attachments/assets/25527af6-de31-474a-b923-5cf4fc60272e)
 
 
