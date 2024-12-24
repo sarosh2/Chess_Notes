@@ -27,10 +27,6 @@ def draw_section(screen, board, font, y_offset):
 
     # While the analysis is running, you can draw a loading message or similar
     engine_lines = []
-    for line in engine_lines:
-        line_text = font.render(line, True, BLACK)
-        screen.blit(line_text, (WIDTH + TEXT_X_OFFSET, y_offset))
-        y_offset += ROW_OFFSET
 
     # After starting the analysis, check for results in the queue
     analysis_thread.join()  # Wait for the analysis thread to finish
@@ -61,7 +57,7 @@ def draw_section(screen, board, font, y_offset):
             for idx, info in enumerate(analysis):
                 moves = info['pv'][:5]  # The first move in the principal variation (best move)
                 moves_str = ", ".join([str(move) for move in moves])  # Join first 5 moves
-                move_score = info['score'].relative.score() / 100 * (2 * score.turn - 1) if info['score'] else None  # Convert to pawns
+                move_score = info['score'].relative.score() / 100 * (2 * score.turn - 1) if info['score'] and info['score'].relative.score() else None  # Convert to pawns
                 engine_lines.append(f"{move_score:.2f} - {moves_str}" if move_score is not None else f"{moves_str}")
 
             # Display engine lines on the screen

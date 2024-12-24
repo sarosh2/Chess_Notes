@@ -1,10 +1,10 @@
 import os
 import json
 from chess import Board  # Assuming you're using python-chess for board handling
-from config import BLACK, WIDTH, NOTES_FILE_PATH, TEXT_X_OFFSET, MAX_MOVES_PER_COLUMN, COLUMN_OFFSET, ROW_OFFSET
+from config import BLACK, WIDTH, NOTES_FILE_PATH_WHITE, NOTES_FILE_PATH_BLACK, TEXT_X_OFFSET, MAX_MOVES_PER_COLUMN, COLUMN_OFFSET, ROW_OFFSET
 
 # Function to load notes from file or create new if the file doesn't exist
-def load_notes():
+def load_notes(NOTES_FILE_PATH):
     if os.path.exists(NOTES_FILE_PATH):
         with open(NOTES_FILE_PATH, 'r') as file:
             return json.load(file)
@@ -12,36 +12,51 @@ def load_notes():
         return {}
 
 # Function to save notes back to the file
-def save_notes(notes):
+def save_notes(notes, NOTES_FILE_PATH):
     with open(NOTES_FILE_PATH, 'w') as file:
         json.dump(notes, file)
 
 # Initialize notes
-notes = load_notes()
+notes_black = load_notes(NOTES_FILE_PATH_BLACK)
+notes_white = load_notes(NOTES_FILE_PATH_WHITE)
 
 # Function to add a new note for a specific position (FEN)
-def add_note_to_position(fen, san_move):
+def add_note_to_position(fen, san_move, notes):
     if fen not in notes:
         notes[fen] = []
     if san_move not in notes[fen]:
         notes[fen].append(san_move)
+    return notes
 
-def add_line_to_notes(moves):
+def add_line_to_notes(moves, flip):
     if moves:
+
+        notes = notes_white
+        NOTES_FILE_PATH = NOTES_FILE_PATH_WHITE
+        if flip:
+            notes = notes_black
+            NOTES_FILE_PATH = NOTES_FILE_PATH_BLACK
+
         temp_board = Board()
         for move in moves:
             san_move = temp_board.san(move)
             fen = temp_board.fen()
-            add_note_to_position(fen, san_move)
+            notes = add_note_to_position(fen, san_move, notes)
             temp_board.push(move)
-        save_notes(notes)
+        save_notes(notes, NOTES_FILE_PATH)
         print("Saved Line Successfully")
     else:
         print("No moves were given")
 
-def delete_move(moves):
+def delete_move(moves, flip):
 
     if moves:
+        notes = notes_white
+        NOTES_FILE_PATH = NOTES_FILE_PATH_WHITE
+        if flip:
+            notes = notes_black
+            NOTES_FILE_PATH = NOTES_FILE_PATH_BLACK
+
         temp_board = Board()
         for i in range(len(moves) - 1):
             temp_board.push(moves[i])
@@ -51,14 +66,18 @@ def delete_move(moves):
         if fen in notes and temp_board.san(move) in notes[fen]:
             notes[fen].remove(temp_board.san(move))
             print("Move Deleted Successfully")
-            save_notes(notes)
+            save_notes(notes, NOTES_FILE_PATH)
         else:
             print("Move not found in saved moves")
 
 # Function to draw the section displaying the notes
-def draw_section(screen, board, font, y_offset_const):
+def draw_section(screen, board, font, y_offset_const, flip):
     # Convert the board's current position to FEN
     fen = board.fen()
+    
+    notes = notes_white
+    if flip:
+        notes = notes_black
 
     # Check if there's a note for this FEN
     if fen in notes:

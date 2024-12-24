@@ -46,7 +46,8 @@ TABS = ["Saved Lines", "Book Lines", "Engine Lines"]
 BUTTONS = ["Reset", "Upload PGN", "Flip", "<", ">", "Save Line", "Delete Move"]
 
 #path to saved lines
-NOTES_FILE_PATH = "saved_lines/my_notes"
+NOTES_FILE_PATH_BLACK = "saved_lines/my_notes_black"
+NOTES_FILE_PATH_WHITE = "saved_lines/my_notes_white"
 
 # List of paths to multiple Polyglot opening books
 OPENING_BOOK_PATHS = [

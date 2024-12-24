@@ -157,17 +157,18 @@ def main():
                 #Perform button click action
                 if selected_button != None:
                     
-                    if selected_button == BUTTONS[0]:
+                    if selected_button == BUTTONS[0]: #RESET
                         setup_new_game()
-                    elif selected_button == BUTTONS[1]:
+                    elif selected_button == BUTTONS[1]: #UPLOAD PGN
                         new_title, new_board = upload_pgn_dialog()
                         if new_board:
                             game_title = new_title
                             board = new_board
                             update = True
-                    elif selected_button == BUTTONS[2]:
+                    elif selected_button == BUTTONS[2]: # FLIP
                         flip = not flip
-                    elif selected_button == BUTTONS[3] and board.move_stack:
+                        update = True
+                    elif selected_button == BUTTONS[3] and board.move_stack: #<
                         if sideline:
                             sideline_history.append(board.pop())
                             if board.fen() == sideline_base_pos:
@@ -177,17 +178,17 @@ def main():
                         else:
                             temp_move_history.append(board.pop())
                         update = True
-                    elif selected_button == BUTTONS[4]:
+                    elif selected_button == BUTTONS[4]: # >
                         if sideline:
                             if sideline_history:
                                 board.push(sideline_history.pop())
                         elif temp_move_history:
                             board.push(temp_move_history.pop())
                         update = True
-                    elif selected_button == BUTTONS[5]:
-                        notes.saved_lines.add_line_to_notes(board.move_stack)
-                    elif selected_button == BUTTONS[6]:
-                        notes.saved_lines.delete_move(board.move_stack)
+                    elif selected_button == BUTTONS[5]: # Save Line
+                        notes.saved_lines.add_line_to_notes(board.move_stack, flip)
+                    elif selected_button == BUTTONS[6]: #Delete Move
+                        notes.saved_lines.delete_move(board.move_stack, flip)
 
                     selected_button = None
 
@@ -234,7 +235,7 @@ def main():
 
         draw_board(screen, flip, sideline)  # Draw the board
         draw_pieces(screen, board, flip, dragging_piece, original_square, offset_x, offset_y)  # Draw the pieces with drag offset
-        notes.draw_notes(screen, board, font, update)  # Draw the notes section
+        notes.draw_notes(screen, board, font, update, flip)  # Draw the notes section
         update = False
 
         draw_button(screen, game_title, 0, HEIGHT, WIDTH - 3 * BUTTON_WIDTH, TAB_HEIGHT, font, selected_button)

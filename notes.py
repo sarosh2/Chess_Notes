@@ -21,7 +21,7 @@ def draw_title(screen, font):
     pygame.draw.rect(screen, BLACK, (WIDTH, 0, NOTES_WIDTH, HEIGHT), BORDER_THICKNESS)  # Border
     screen.blit(notes_title, (WIDTH + (NOTES_WIDTH - title_width) // 2, (TAB_HEIGHT - title_height) // 2))  # Position title at the top
 
-def draw_notes(screen, board, font, update):
+def draw_notes(screen, board, font, update, flip):
     """Draw the 'My Notes' section on the right side of the screen."""
     global last_draw_time
 
@@ -44,7 +44,7 @@ def draw_notes(screen, board, font, update):
     y_offset = TEXT_Y_OFFSET
     if selected_tab == TABS[0] and update:
         pygame.draw.rect(screen, BACKGROUND_COLOR, (WIDTH, 2 * TAB_HEIGHT, NOTES_WIDTH, half_height))  # Background
-        saved_lines.draw_section(screen, board, font, y_offset)
+        saved_lines.draw_section(screen, board, font, y_offset, flip)
     elif selected_tab == TABS[1] and update:
         pygame.draw.rect(screen, BACKGROUND_COLOR, (WIDTH, 2 * TAB_HEIGHT, NOTES_WIDTH, half_height))  # Background
         stats.draw_section(screen, board, font, y_offset)
